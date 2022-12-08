@@ -17,19 +17,15 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        $users = User::factory()->count(5)->create();
-        $robert = User::factory()->createRobertKatz()->create();
-        $users->concat([$robert]);
-        
-        $posts = BlogPost::factory()->count(50)->make()->each(function($post) use ($users) {
-            $post->user_id = $users->random()->id;
-            $post->save();
-        });
+        if ($this->command->confirm('Do you want to refresh the database?')) {
+            $this->command->call('migrate:refresh');
+            $this->command->info('Database refreshed');
+        }
 
-        $comments = Comment::factory()->count(150)->make()->each(function($comment) use ($posts) {
-            $comment->blog_post_id = $posts->random()->id;
-            $comment->save();
-        });
-
+        $this->call([
+            UsersTableSeeder::class,
+            BlogPostTableSeeder::class,
+            CommentsTableSeeder::class,
+        ]);
     }
 }
