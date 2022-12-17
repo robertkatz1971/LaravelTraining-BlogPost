@@ -31,7 +31,9 @@ class AddUserToBlogPostTable extends Migration
     public function down()
     {
         Schema::table('blog_posts', function (Blueprint $table) {
-            $table->dropForeign(['user_id']);
+            if (env('DB_CONNECTION') !== 'sqlite') {
+                $table->dropForeign(['user_id']);
+            }
             $table->dropColumn('user_id');
         });
     }

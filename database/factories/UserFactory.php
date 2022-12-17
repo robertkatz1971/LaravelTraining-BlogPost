@@ -39,6 +39,19 @@ class UserFactory extends Factory
                 'name' => 'Robert Katz',
                 'email' => 'robertkatz1971@gmail.com',
                 'password' => Hash::make('P@ssw0rd'),
+                'is_admin' => 1,
+            ];
+        });
+    }
+
+    public function createAllaKatz()
+    {
+        return $this->state(function (array $attributes) {
+            return [
+                'name' => 'Alla Katz',
+                'email' => 'allakatz@gmail.com',
+                'password' => Hash::make('P@ssw0rd'),
+                'is_admin' => 0,
             ];
         });
     }

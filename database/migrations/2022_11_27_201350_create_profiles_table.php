@@ -28,7 +28,11 @@ class CreateProfilesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('profiles');
-
+        Schema::table('profiles', function (Blueprint $table) {
+            if (env('DB_CONNECTION') !== 'sqlite') {
+                $table->dropForeign('author_id');
+            }
+            Schema::dropIfExists('profiles');
+        });
     }
 }

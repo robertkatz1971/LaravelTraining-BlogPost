@@ -84,15 +84,16 @@ class PostTest extends TestCase
 
     public function testUpdateValid()
     {
-        $post = $this->actingAs($this->user())
-                     ->createPost();
+        $user = $this->user();
+        $post = $this->createPost($user->id);
 
         $params = [
             'title' => 'New title',
             'content' => 'New content'
         ];
 
-        $this->put("/posts/{$post->id}", $params)
+        $this->actingAs($user)
+            ->put("/posts/{$post->id}", $params)
             ->assertStatus(302)
             ->assertSessionHas('status', 'Blog post was updated.');
         
@@ -109,12 +110,13 @@ class PostTest extends TestCase
 
     public function testDeleteWorks() {
 
-        $post = $this->actingAs($this->user())
-                      ->createPost();
+        $user = $this->user();
+        $post =  $this->createPost($user->id);
 
-        $this->delete("/posts/{$post->id}")
-        ->assertStatus(302)
-        ->assertSessionHas('status', 'Blog post was deleted!');
+        $this->actingAs($user)
+            ->delete("/posts/{$post->id}")
+            ->assertStatus(302)
+            ->assertSessionHas('status');
 
         $this->assertSoftDeleted('blog_posts', [
             'title' => "Title",
@@ -150,8 +152,10 @@ class PostTest extends TestCase
         $response->assertStatus(200);
     }
 
-    private function createPost() : BlogPost {
-        return BlogPost::factory()->testing()->create();
+    private function createPost($userId = null) : BlogPost {
+        return BlogPost::factory()->testing()->create([
+            'user_id' => $userId ?? $this->user()->id,
+        ]);
     }
 
     private function createComment() {

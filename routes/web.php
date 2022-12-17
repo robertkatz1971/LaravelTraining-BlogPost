@@ -43,8 +43,9 @@ $posts = [
 
 Auth::routes();
 
-Route::get('/', [HomeController::class, 'home'])->name('home.index');
+Route::get('/', [HomeController::class, 'contact']);
 Route::get('/contact', [HomeController::class, 'contact'])->name('home.contact');
+Route::get('/secret', [HomeController::class, 'secret'])->name('home.secret')->middleware('can:isAdmin');
 Route::get('/about', AboutController::class)->name('home.about');
 
 Route::resource('posts', PostsController::class);

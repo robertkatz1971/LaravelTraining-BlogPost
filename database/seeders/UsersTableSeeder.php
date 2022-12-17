@@ -15,12 +15,15 @@ class UsersTableSeeder extends Seeder
     public function run()
     {
         $userCount = max((int)$this->command->ask('How many users would you like?', 5),1);
-        User::factory()->count($userCount)->create();
+        User::factory()->count($userCount - 2)->create();
 
         $robert = User::where('email', '=', 'robertkatz1971@gmail.com')->first();
         if (!$robert) {
             User::factory()->createRobertKatz()->create();
         }
-       
+        $alla = User::where('email', '=', 'allakatz@gmail.com')->first();
+        if (!$alla) {
+            User::factory()->createAllaKatz()->create();
+        }
     }
 }

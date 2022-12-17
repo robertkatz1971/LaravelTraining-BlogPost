@@ -17,7 +17,6 @@ class AddCascadingDeleteOnCommentsTable extends Migration
             if(!env('DB_CONNECTION') === 'sqlite_testing') {
                 $table->dropForeign(['blog_post_id']);
             }
-            $table->dropForeign(['blog_post_id']);
             $table->foreign('blog_post_id')->references('id')->on('blog_posts')->onDelete('cascade');
         });
     }
@@ -33,9 +32,6 @@ class AddCascadingDeleteOnCommentsTable extends Migration
             if(!env('DB_CONNECTION') === 'sqlite_testing') {
                 $table->dropForeign(['blog_post_id']);
             }
-
-            $table->dropForeign(['blog_post_id']);
-            $table->foreign('blog_post_id')->references('id')->on('blog_posts');
         });
     }
 }

@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\StorePost;
 use App\Models\BlogPost;
 use Illuminate\Http\Request;
+use App\Http\Requests\StorePost;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 
 class PostsController extends Controller
 { 
@@ -65,6 +66,7 @@ class PostsController extends Controller
     public function store(StorePost $request)
     {
         $validated = $request->validated();
+        $validated = array_merge($validated, ['user_id' => Auth::id()]);
         $blogPost = BlogPost::create($validated);
 
         $request->session()->flash('status', 'The blog post was created!');
@@ -90,7 +92,9 @@ class PostsController extends Controller
      */
     public function edit($id)
     {
-        return view('posts.edit', ['post' => BlogPost::findOrFail($id)]);
+        $post = BlogPost::findOrFail($id);
+        $this->authorize($post);
+        return view('posts.edit', ['post' => $post]);
     }
 
     /**
@@ -103,6 +107,7 @@ class PostsController extends Controller
     public function update(StorePost $request, $id)
     {
         $post = BlogPost::findOrFail($id);
+        $this->authorize($post);
         $validated = $request->validated();
         $post->fill($validated);
         $post->save();
@@ -121,6 +126,7 @@ class PostsController extends Controller
     public function destroy($id)
     {
         $post = BlogPost::findOrFail($id);
+        $this->authorize($post);
         $post->destroy($id);
 
         session()->flash('status', 'Blog post was deleted!');

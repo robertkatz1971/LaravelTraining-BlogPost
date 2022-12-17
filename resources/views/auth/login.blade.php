@@ -4,7 +4,7 @@
         @csrf
         <div class="form-group">
             <label for="">E-mail</label>
-            <input name="email" value="{{ old('email') }}" class="form-control{{ $errors->has('username') ? ' is-invalid' : '' }}">
+            <input name="email" value="robertkatz1971@gmail.com"  class="form-control{{ $errors->has('username') ? ' is-invalid' : '' }}">
             @if ($errors->has('email'))
             <span class="invalid-feedback">
                 <strong>{{ $errors->first('email') }}</strong>
@@ -13,7 +13,7 @@
         </div>
         <div class="form-group">
             <label for="">Password</label>
-            <input name="password" type="password" class="form-control{{ $errors->has('password') ? ' is-invalid' : '' }}">
+            <input name="password" value="P@ssw0rd" type="password" class="form-control{{ $errors->has('password') ? ' is-invalid' : '' }}">
             @if ($errors->has('password'))
             <span class="invalid-feedback">
                 <strong>{{ $errors->first('password') }}</strong>
