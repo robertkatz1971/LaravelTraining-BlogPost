@@ -22,8 +22,6 @@ class CreateCommentsTable extends Migration
             }  
             $table->unsignedBigInteger('blog_post_id')->index();
             $table->timestamps();
-
-            $table->foreign('blog_post_id')->references("id")->on('blog_posts');
         });
     }
 
@@ -34,11 +32,6 @@ class CreateCommentsTable extends Migration
      */
     public function down()
     {
-        Schema::table('comments', function (Blueprint $table) {
-            if (env('DB_CONNECTION') !== 'sqlite') {
-                $table->dropForeign(['blog_post_id']);
-            }
-        });
         Schema::dropIfExists('comments');
     }
 }

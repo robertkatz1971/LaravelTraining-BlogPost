@@ -13,18 +13,21 @@ class PostTest extends TestCase
     
     public function testNoBlogPostTextVisibleWhenNoPosts()
     {
+        //Arrange
         $response = $this->actingAs($this->user())
                          ->get(route('posts.index'));
 
-        $response->assertSeeText('No Post found!');
-        $response->assertStatus(200);
+        
+        //Act
+        $response->assertSeeText('No Post found!')
+            ->assertOk();
     }
 
     public function testSeeOnePostWhenOneExists()
     {
 
-        $post = $this->actingAs($this->user())
-                      ->createPost();
+        $this->actingAs($this->user())
+            ->createPost();
 
         $response = $this->get(route('posts.index'));
 
@@ -33,9 +36,10 @@ class PostTest extends TestCase
             'content' => "Content",
         ]);
 
-        $response->assertDontSeeText('No Post found!');
-        $response->assertSee("Title");
-        $response->assertStatus(200);
+        
+        $response->assertDontSeeText('No Post found!')
+            ->assertSee("Title")
+            ->assertOk();
     }
 
     public function testStoreValid()
@@ -84,7 +88,7 @@ class PostTest extends TestCase
 
     public function testUpdateValid()
     {
-        $user = $this->user();
+        $user =  $this->user();
         $post = $this->createPost($user->id);
 
         $params = [

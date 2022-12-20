@@ -42,9 +42,14 @@ class PostsController extends Controller
         //     ])->get();
         // dd($post);
 
-        $posts = BlogPost::withCount('comments')->get();
+        $posts = BlogPost::latest()->withCount('comments')->get();
 
-        return view('posts.index', ['posts' => $posts]);
+        return view('posts.index', [
+                'posts' => $posts,
+                'mostCommented' => BlogPost::withCount('comments')
+                    ->orderBy('comments_count', 'desc')
+                    ->take(5)->get()
+            ]);
     }
 
     /**
@@ -66,7 +71,7 @@ class PostsController extends Controller
     public function store(StorePost $request)
     {
         $validated = $request->validated();
-        $validated = array_merge($validated, ['user_id' => Auth::id()]);
+        $validated = array_merge($validated, ['user_id' => $request->user()->id]);
         $blogPost = BlogPost::create($validated);
 
         $request->session()->flash('status', 'The blog post was created!');
@@ -81,7 +86,18 @@ class PostsController extends Controller
      */
     public function show($id)
     {
-        return view('posts.show', ['post' => BlogPost::with('comments')->findOrFail($id)]);
+        //one way to apply local scope to query (notice lamda after 'comments')
+        return view('posts.show', [
+            'post' => BlogPost::with(['comments' => function ($query) {
+                return $query->latest();
+            }])->findOrFail($id),
+        ]);
+
+        //here we remove lamda and sorting of comments is done on relationship in the 
+        //blog post model (see model)
+        return view('posts.show', [
+            'post' => BlogPost::with('comments')->findOrFail($id),
+        ]);
     }
 
     /**
