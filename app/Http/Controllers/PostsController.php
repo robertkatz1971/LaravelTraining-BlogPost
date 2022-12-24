@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use App\Models\BlogPost;
 use Illuminate\Http\Request;
 use App\Http\Requests\StorePost;
@@ -13,7 +14,7 @@ class PostsController extends Controller
 
     public function __construct()
     {
-        $this->middleware('auth');
+        $this->middleware('auth')->except('index', 'show');
     }
 
     /**
@@ -46,9 +47,10 @@ class PostsController extends Controller
 
         return view('posts.index', [
                 'posts' => $posts,
-                'mostCommented' => BlogPost::withCount('comments')
-                    ->orderBy('comments_count', 'desc')
-                    ->take(5)->get()
+                'mostCommented' => BlogPost::mostCommented()
+                                     ->take(5)->get(),
+                'mostActive' => User::mostBlogPosts()->take(5)->get(),
+                'mostActiveLastMonth' => User::mostBlogPostsLastMonth()->take(5)->get(),
             ]);
     }
 
@@ -146,6 +148,14 @@ class PostsController extends Controller
         $post->destroy($id);
 
         session()->flash('status', 'Blog post was deleted!');
+        return redirect()->route('posts.index');
+    }
+
+    public function restore($id) {
+        $post = BlogPost::withTrashed()->findOrFail($id);
+        $post->restore();
+
+        session()->flash('status', 'Blog post was restored!');
         return redirect()->route('posts.index');
     }
 }

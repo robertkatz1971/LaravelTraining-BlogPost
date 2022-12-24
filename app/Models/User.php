@@ -2,10 +2,12 @@
 
 namespace App\Models;
 
+use Illuminate\Support\Carbon;
+use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
 
 class User extends Authenticatable
 {
@@ -43,5 +45,16 @@ class User extends Authenticatable
 
     public function BlogPost() {
        return  $this->hasMany('App\Models\BlogPost');
+    }
+
+    public function scopeMostBlogPosts (Builder $query) {
+        return $query->withCount('BlogPost')->orderBy('blog_post_count', 'desc');
+    }
+
+    public function scopeMostBlogPostsLastMonth (Builder $query) {
+        return $query->withCount(['BlogPost' => function (Builder $query) {
+            $query->where(static::CREATED_AT, '>', now()->subMonth());
+        }])->having('blog_post_count', '>=', 2)
+           ->orderBy('blog_post_count', 'desc');
     }
 }

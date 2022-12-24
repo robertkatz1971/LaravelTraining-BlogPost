@@ -43,12 +43,14 @@ $posts = [
 
 Auth::routes();
 
-Route::get('/', [HomeController::class, 'contact']);
+Route::get('/', [PostsController::class, 'index']);
 Route::get('/contact', [HomeController::class, 'contact'])->name('home.contact');
 Route::get('/secret', [HomeController::class, 'secret'])->name('home.secret')->middleware('can:isAdmin');
 Route::get('/about', AboutController::class)->name('home.about');
 
 Route::resource('posts', PostsController::class);
+Route::post('/posts/{id}/restore', [PostsController::class, 'restore'])->name('posts.restore');
+
 
 // Route::get('/posts', function () use ($posts) {
 //     return view('posts.index', ['posts' => $posts]);

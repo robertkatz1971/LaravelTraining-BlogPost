@@ -2,9 +2,9 @@
 
 namespace App\Models;
 
-use App\Scopes\LatestScope;
-use Illuminate\Database\Query\Builder;
+use App\Scopes\DeletedAdminScope;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
@@ -28,12 +28,19 @@ class BlogPost extends Model
         return $query->orderBy(static::CREATED_AT, 'desc');
     }
 
+    public function scopeMostCommented(Builder $query) {
+        return $query->withCount('comments')->orderBy('comments_count', 'desc');
+    }
+
     //subscribing to event and handling deleting related records.   
     public static function boot() {
+        //adding before boot in this specific example because useSoftDeletes attribute prevents
+        //withTrashed() from working properly.
+        
+        static::addGlobalScope(new DeletedAdminScope);
+
         parent::boot();
 
-        //static::addGlobalScope(new LatestScope);
-        
         static::deleting(function (BlogPost $post) {
             $post->comments()->delete();
         });

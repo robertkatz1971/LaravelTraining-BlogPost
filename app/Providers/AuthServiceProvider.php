@@ -33,7 +33,7 @@ class AuthServiceProvider extends ServiceProvider
         });
 
         Gate::before(function($user, $ability) {
-            if ((in_array($ability, ['update', 'delete']) && $user->is_admin)) {
+            if ((in_array($ability, ['update', 'delete', 'restore']) && $user->is_admin)) {
                 return true;
             }
         });
