@@ -4,22 +4,27 @@
 
 @section('content')
 
-<h1>{{ $post['title'] }}</h1>
-<p>{{ $post['content'] }}</p>
-<p>Added {{ $post->created_at->diffForHumans() }}</p>
+<h1>{{ $post['title'] }}
+    {{ $visible = $post->created_at->diffInMinutes() < 150 }}
+    <x-badge :visible=$visible>
+        New!
+    </x-badge>
+</h1>
 
-@if(now()->diffInMinutes($post->created_at) < 30) 
-    <div class="alert alert-info">New!</div>
-@endif
+<p>{{ $post['content'] }}</p>
+<x-updated date='{{ $post->created_at->diffForHumans() }}' name='{{ $post->user->name }}'>
+</x-updated>
+<x-updated date='{{ $post->updated_at->diffForHumans() }}'>
+    Updated
+</x-updated>
 
 <h4>Comments</h4>
 @forelse ($post->comments as $comment)
     <p>
         {{ $comment->content }}, 
     </p>
-    <p class="text-muted">
-        added {{ $comment->created_at->diffForHumans() }}
-    </p>
+    <x-updated date='{{ $comment->created_at->diffForHumans() }}'>
+    </x-updated>
 @empty
     <div>No Comments found!</div>
 @endforelse

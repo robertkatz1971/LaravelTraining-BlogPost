@@ -5,7 +5,11 @@
 @if ($post->trashed())
     </del>
 @endif
-<p>Created at {{ $post->created_at }} by {{ $post->user->name }}</p>
+<x-updated date='{{ $post->created_at->diffForHumans() }}' name='{{ $post->user->name }}'>
+</x-updated>
+<x-updated date='{{ $post->updated_at->diffForHumans() }}'>
+    Updated
+</x-updated>
 @if($post->comments_count) 
     <p>{{ $post->comments_count . " comment"}}{{ $post->comments_count == 1 ? "": "s" }}</p>
 @else
