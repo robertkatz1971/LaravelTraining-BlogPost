@@ -6,6 +6,7 @@ use App\Models\User;
 use App\Models\Comment;
 use App\Models\BlogPost;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Cache;
 use SebastianBergmann\Environment\Console;
 
 class DatabaseSeeder extends Seeder
@@ -21,6 +22,8 @@ class DatabaseSeeder extends Seeder
             $this->command->call('migrate:refresh');
             $this->command->info('Database refreshed');
         }
+
+        Cache::tags('blog_post')->flush();
 
         $this->call([
             UsersTableSeeder::class,

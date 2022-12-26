@@ -16,6 +16,7 @@
     <p>No comments yet</p>
 @endif
 
+@auth  
 <div class="mb-3">
     @can('update', $post)
         <a href="{{ route('posts.edit', ['post' => $post->id]) }}" class="btn btn-primary">Edit</a>
@@ -37,5 +38,5 @@
             </form>   
         @endif
     @endcan
-   
 </div>
+@endauth
