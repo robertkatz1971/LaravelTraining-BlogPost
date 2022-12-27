@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Comment;
 use Illuminate\Support\Carbon;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Builder;
@@ -43,8 +44,12 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
-    public function BlogPost() {
+    public function blogPost() {
        return  $this->hasMany('App\Models\BlogPost');
+    }
+
+    public function comments() {
+       return $this->hasMany(Comment::class);
     }
 
     public function scopeMostBlogPosts (Builder $query) {

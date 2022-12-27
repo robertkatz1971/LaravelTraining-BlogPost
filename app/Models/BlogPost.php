@@ -2,12 +2,13 @@
 
 namespace App\Models;
 
+use App\Models\Tag;
 use App\Scopes\DeletedAdminScope;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Support\Facades\Cache;
 
 class BlogPost extends Model
 {
@@ -23,6 +24,10 @@ class BlogPost extends Model
 
     public function user() {
         return $this->belongsTo('App\Models\User');
+    }
+
+    public function tags() {
+        return $this->belongsToMany(Tag::class)->withTimestamps();
     }
 
     public function scopeLatest(Builder $query) {

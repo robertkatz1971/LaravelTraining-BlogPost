@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\AboutController;
 use App\Http\Controllers\PostsController;
+use App\Http\Controllers\PostTagController;
 
 /*
 |--------------------------------------------------------------------------
@@ -51,6 +52,7 @@ Route::get('/about', AboutController::class)->name('home.about');
 Route::resource('posts', PostsController::class);
 Route::post('/posts/{id}/restore', [PostsController::class, 'restore'])->name('posts.restore');
 
+Route::get('/posts/tag/{tag}', [PostTagController::class, 'index'])->name('post.tags.index');
 
 // Route::get('/posts', function () use ($posts) {
 //     return view('posts.index', ['posts' => $posts]);

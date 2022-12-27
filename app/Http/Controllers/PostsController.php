@@ -25,25 +25,15 @@ class PostsController extends Controller
      */
     public function index()
     {
-        $mostCommentedBlogPosts = Cache::tags(['blog-post'])->remember('blog-post-most-commented', now()->addSeconds(30), function () {
-            return BlogPost::mostCommented()->take(5)->get();
-        });
-
-        $mostActiveUsers = Cache::remember('users-most-active', now()->addSeconds(30), function () {
-            return User::mostBlogPosts()->take(5)->get();
-        });
-
-        $mostActiveUserLastMonth = Cache::remember('users-most-active-last-month', now()->addSeconds(30), function () {
-            return User::mostBlogPostsLastMonth()->take(5)->get();
-        });
-
-        $posts = BlogPost::latest()->with('user')->withCount('comments')->get();
+       
+        $posts = BlogPost::latest()
+            ->with('user')
+            ->withCount('comments')
+            ->with('tags')
+            ->get();
 
         return view('posts.index', [
                 'posts' => $posts,
-                'mostCommented' => $mostCommentedBlogPosts,
-                'mostActive' => $mostActiveUsers,
-                'mostActiveLastMonth' => $mostActiveUserLastMonth,
             ]);
     }
 
@@ -122,7 +112,10 @@ class PostsController extends Controller
         $counter = Cache::tags(['blog-post'])->get($counterKey);
 
         $post = Cache::tags(['blog-post'])->remember("blog_post_{$id}",now()->addMinutes(30), function () use ($id) {
-            return BlogPost::with('comments')->findOrFail($id);
+            return BlogPost::with('comments')
+                ->with('user')
+                ->with('tags')
+                ->findOrFail($id);
         });
 
         //here we remove lamda and sorting of comments is done on relationship in the 

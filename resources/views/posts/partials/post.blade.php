@@ -10,6 +10,9 @@
 <x-updated date='{{ $post->updated_at->diffForHumans() }}'>
     Updated
 </x-updated>
+<x-tags>
+    @slot('tags', $post->tags)
+</x-tags>
 @if($post->comments_count) 
     <p>{{ $post->comments_count . " comment"}}{{ $post->comments_count == 1 ? "": "s" }}</p>
 @else
