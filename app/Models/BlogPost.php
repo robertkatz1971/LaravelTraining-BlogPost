@@ -3,6 +3,8 @@
 namespace App\Models;
 
 use App\Models\Tag;
+use App\Models\User;
+use App\Models\Comment;
 use App\Scopes\DeletedAdminScope;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Database\Eloquent\Model;
@@ -19,15 +21,22 @@ class BlogPost extends Model
 
     public function comments() {
         //applying local scope to order comments by created date (see: comment::scopeLatest)
-        return $this->hasMany('App\Models\Comment')->latest();
+        return $this->hasMany(Comment::class)->latest();
     }
 
     public function user() {
-        return $this->belongsTo('App\Models\User');
+        return $this->belongsTo(User::class);
     }
 
     public function tags() {
         return $this->belongsToMany(Tag::class)->withTimestamps();
+    }
+
+    public function scopeLatestWithRelations(Builder $query) {
+        return $query->latest()
+            ->with('user')
+            ->withCount('comments')
+            ->with('tags');
     }
 
     public function scopeLatest(Builder $query) {
@@ -49,6 +58,7 @@ class BlogPost extends Model
 
         static::deleting(function (BlogPost $post) {
             $post->comments()->delete();
+            Cache::tags(['blog-post'])->forget("blog_post_{$post->id}");
         });
 
         static::restoring(function (BlogPost $post) {
@@ -56,7 +66,7 @@ class BlogPost extends Model
         });
 
         static::updating(function (BlogPost $post) {
-            Cache::forget("blog_post_{$post->id}");
+            Cache::tags(['blog-post'])->forget("blog_post_{$post->id}");
         });
     }
 }

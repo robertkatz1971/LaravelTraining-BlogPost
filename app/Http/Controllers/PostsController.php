@@ -27,9 +27,7 @@ class PostsController extends Controller
     {
        
         $posts = BlogPost::latest()
-            ->with('user')
-            ->withCount('comments')
-            ->with('tags')
+            ->latestWithRelations()
             ->get();
 
         return view('posts.index', [
@@ -112,9 +110,7 @@ class PostsController extends Controller
         $counter = Cache::tags(['blog-post'])->get($counterKey);
 
         $post = Cache::tags(['blog-post'])->remember("blog_post_{$id}",now()->addMinutes(30), function () use ($id) {
-            return BlogPost::with('comments')
-                ->with('user')
-                ->with('tags')
+            return BlogPost::with('comments', 'user', 'tags', 'comments.user')
                 ->findOrFail($id);
         });
 

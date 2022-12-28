@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\AboutController;
+use App\Http\Controllers\PostCommentController;
 use App\Http\Controllers\PostsController;
 use App\Http\Controllers\PostTagController;
 
@@ -50,6 +51,7 @@ Route::get('/secret', [HomeController::class, 'secret'])->name('home.secret')->m
 Route::get('/about', AboutController::class)->name('home.about');
 
 Route::resource('posts', PostsController::class);
+Route::resource('post.comment', PostCommentController::class)->only(['store']);
 Route::post('/posts/{id}/restore', [PostsController::class, 'restore'])->name('posts.restore');
 
 Route::get('/posts/tag/{tag}', [PostTagController::class, 'index'])->name('post.tags.index');
