@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Models\Tag;
 use App\Models\User;
+use App\Models\Image;
 use App\Models\Comment;
 use App\Scopes\DeletedAdminScope;
 use Illuminate\Support\Facades\Cache;
@@ -30,6 +31,10 @@ class BlogPost extends Model
 
     public function tags() {
         return $this->belongsToMany(Tag::class)->withTimestamps();
+    }
+
+    public function image() {
+        return $this->hasOne(Image::class);
     }
 
     public function scopeLatestWithRelations(Builder $query) {

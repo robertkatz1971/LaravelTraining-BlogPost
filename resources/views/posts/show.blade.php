@@ -5,14 +5,31 @@
 @section('content')
 <div class="row">
     <div class="col-8">
-        <h1>{{ $post['title'] }}
-            {{ $visible = $post->created_at->diffInMinutes() < 150 }}
-            <x-badge :visible=$visible>
+        @if($post->image)
+        <div style="background-image: url('{{ $post->image->url() }}'); 
+            min-height: 200px; 
+            color: black;
+            background-repeat: no-repeat; 
+            text-align: center; 
+            background-attachment: scroll;"
+        >
+            <h1 style="padding-top: : 100px; text-shadow: 1px 2px #FF0000">      
+        @else
+            <h1>
+        @endif
+            {{ $post->title }}       
+            <x-badge visible='{{ ($post->created_at->diffInMinutes() < 150) }}'>
                 New!
             </x-badge>
-        </h1>
+        @if($post->image)
+                </h1>
+            </div>
+        @else
+            </h1>
+        @endif
 
-        <p>{{ $post['content'] }}</p>
+        <p>{{ $post->content }}</p>
+        
         <x-updated date='{{ $post->created_at->diffForHumans() }}' name='{{ $post->user->name }}'>
         </x-updated>
         <x-updated date='{{ $post->updated_at->diffForHumans() }}'>
