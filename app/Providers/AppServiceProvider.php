@@ -2,9 +2,10 @@
 
 namespace App\Providers;
 
-use App\Http\ViewComposers\ActivityComposer;
 use Illuminate\Support\Facades\Blade;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
+use App\Http\ViewComposers\ActivityComposer;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -25,6 +26,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+
+        Schema::defaultStringLength(191);
+        
         //registering a view composer to be used by various views
         view()->composer(['posts.index', 'posts.show'], ActivityComposer::class);
     }
