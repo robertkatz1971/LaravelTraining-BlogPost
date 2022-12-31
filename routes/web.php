@@ -7,6 +7,7 @@ use App\Http\Controllers\AboutController;
 use App\Http\Controllers\PostCommentController;
 use App\Http\Controllers\PostsController;
 use App\Http\Controllers\PostTagController;
+use App\Http\Controllers\UserController;
 
 /*
 |--------------------------------------------------------------------------
@@ -50,6 +51,7 @@ Route::get('/contact', [HomeController::class, 'contact'])->name('home.contact')
 Route::get('/secret', [HomeController::class, 'secret'])->name('home.secret')->middleware('can:isAdmin');
 Route::get('/about', AboutController::class)->name('home.about');
 
+Route::resource('users', UserController::class)->only(['show', 'edit', 'update']);
 Route::resource('posts', PostsController::class);
 Route::resource('post.comment', PostCommentController::class)->only(['store']);
 Route::post('/posts/{id}/restore', [PostsController::class, 'restore'])->name('posts.restore');

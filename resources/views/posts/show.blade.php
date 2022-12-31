@@ -31,6 +31,9 @@
         <p>{{ $post->content }}</p>
         
         <x-updated date='{{ $post->created_at->diffForHumans() }}' name='{{ $post->user->name }}'>
+            @slot('userId')
+                {{ $post->user->id }}
+            @endslot
         </x-updated>
         <x-updated date='{{ $post->updated_at->diffForHumans() }}'>
             Updated
@@ -46,6 +49,9 @@
                 {{ $comment->content }}, 
             </p>
             <x-updated date='{{ $comment->created_at->diffForHumans() }}' name='{{ $comment->user->name }}'>
+                @slot('userId')
+                    {{ $comment->user->id }}
+                @endslot    
             </x-updated>
         @empty
             <div>No Comments found!</div>

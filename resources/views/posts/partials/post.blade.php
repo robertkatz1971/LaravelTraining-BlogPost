@@ -6,6 +6,9 @@
     </del>
 @endif
 <x-updated date='{{ $post->created_at->diffForHumans() }}' name='{{ $post->user->name }}'>
+    @slot('userId')
+        {{ $post->user->id }}
+    @endslot
 </x-updated>
 <x-updated date='{{ $post->updated_at->diffForHumans() }}'>
     Updated
